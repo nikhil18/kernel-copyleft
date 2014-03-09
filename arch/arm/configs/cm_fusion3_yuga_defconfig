@@ -602,7 +602,10 @@ CONFIG_CRYPTO_NULL=y
 CONFIG_CRYPTO_XCBC=y
 CONFIG_CRYPTO_TWOFISH=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> e0f3d7a... some more fixes for gamma control
 <<<<<<< HEAD:arch/arm/configs/cm_fusion3_yuga_defconfig
 CONFIG_CRYPTO_AES_ARM=y
 CONFIG_CRYPTO_SHA1_ARM=y
@@ -619,7 +622,13 @@ CONFIG_DECOMPRESS_LZ4=y
 # CONFIG_CRYPTO_HW is not set
 
 CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE=y
+<<<<<<< HEAD
 CONFIG_UPDATE_LCDC_LUT=y
 CONFIG_LCD_KCAL=y
 >>>>>>> 560bde1... added initial patches for GammaControl (currently not working) [thanks to @nikhiljan93]:arch/arm/configs/custom_fusion3_yuga_defconfig
 >>>>>>> 31c1a56... added initial patches for GammaControl (currently not working) [thanks to @nikhiljan93]
+=======
+CONFIG_UPDATE_LCDC_LUT_STANDALONE=y
+CONFIG_LCD_KCAL_STANDALONE=m
+>>>>>>> 782fa4c... some more fixes for gamma control:arch/arm/configs/custom_fusion3_yuga_defconfig
+>>>>>>> e0f3d7a... some more fixes for gamma control
