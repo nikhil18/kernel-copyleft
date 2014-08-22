@@ -32,16 +32,14 @@
 
 static const int valid_fqs[TABLE_SIZE] = {192000, 384000, 486000, 594000, 702000,
 			810000, 918000, 1026000, 1134000, 1242000, 1350000,
-			1458000, 1512000};
+			1458000, 1728000};
 static void do_dbs_timer(struct work_struct *work);
 
 static int thresh_adj = 0;
 static int opt_pos = OPTIMAL_POSITION;
 extern bool go_opt;
 static unsigned int dbs_enable, down_requests, prev_table_position, freq_table_position, min_sampling_rate;
-bool power_suspended = false;
-
-static bool io_is_busy = true;
+bool early_suspended = false;
 
 struct cpu_dbs_info_s {
 	cputime64_t prev_cpu_idle;
@@ -89,16 +87,16 @@ static inline u64 get_cpu_idle_time_jiffy(unsigned int cpu, u64 *wall)
 	return jiffies_to_usecs(idle_time);
 }
 
-static inline u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy)
+static inline cputime64_t get_cpu_idle_time(unsigned int cpu, cputime64_t *wall)
 {
-        u64 idle_time = get_cpu_idle_time_us(cpu, io_busy ? wall : NULL);
+	u64 idle_time = get_cpu_idle_time_us(cpu, NULL);
 
-        if (idle_time == -1ULL)
-                return get_cpu_idle_time_jiffy(cpu, wall);
-        else if (!io_busy)
-                idle_time += get_cpu_iowait_time_us(cpu, wall);
+	if (idle_time == -1ULL)
+		return get_cpu_idle_time_jiffy(cpu, wall);
+	else
+		idle_time += get_cpu_iowait_time_us(cpu, wall);
 
-        return idle_time;
+	return idle_time;
 }
 
 static inline cputime64_t get_cpu_iowait_time(unsigned int cpu, cputime64_t *wall)
@@ -169,31 +167,8 @@ static ssize_t store_up_threshold(struct kobject *a, struct attribute *b,
 
 define_one_global_rw(up_threshold);
 
-static ssize_t show_io_is_busy(struct kobject *kobj,
-			struct attribute *attr, char *buf)
-{
-	return sprintf(buf, "%u\n", io_is_busy);
-}
-
-static ssize_t store_io_is_busy(struct kobject *kobj,
-			struct attribute *attr, const char *buf, size_t count)
-{
-	int ret;
-	unsigned long val;
-
-	ret = kstrtoul(buf, 0, &val);
-	if (ret < 0)
-		return ret;
-	io_is_busy = val;
-	return count;
-}
-
-static struct global_attr io_is_busy_attr = __ATTR(io_is_busy, 0644,
-		show_io_is_busy, store_io_is_busy);
-
 static struct attribute *dbs_attributes[] = {
 	&up_threshold.attr,
-	&io_is_busy_attr.attr,
 	NULL
 };
 
@@ -218,7 +193,7 @@ static int get_load(struct cpufreq_policy *policy)
 
 		j_dbs_info = &per_cpu(cs_cpu_dbs_info, j);
 
-		cur_idle_time = get_cpu_idle_time(j, &cur_wall_time, io_is_busy);
+		cur_idle_time = get_cpu_idle_time(j, &cur_wall_time);
 		cur_iowait_time = get_cpu_iowait_time(j, &cur_wall_time);
 
 		wall_time = (unsigned int)
@@ -254,7 +229,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	unsigned int max_load, freq_target, j;
 	struct cpufreq_policy *policy = this_dbs_info->cur_policy;
 
-	if (power_suspended) {
+	if (early_suspended) {
 		opt_pos = 1;
 	} else {
 		opt_pos = OPTIMAL_POSITION;
@@ -285,10 +260,10 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		for (j = 0; j < TABLE_SIZE; j++) {
 			if (valid_fqs[target_table_position] < freq_target) target_table_position++;
 		}
-		freq_table_position = (freq_table_position + target_table_position + !power_suspended) / 2;
+		freq_table_position = (freq_table_position + target_table_position + !early_suspended) / 2;
 	}
 
-	if (!power_suspended) {
+	if (!early_suspended) {
 		// apply hysteresis before dropping to lower bus speeds
 		if (freq_table_position < opt_pos) {
 			freq_table_position = opt_pos;
@@ -368,7 +343,7 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 			j_dbs_info->cur_policy = policy;
 
 			j_dbs_info->prev_cpu_idle = get_cpu_idle_time(j,
-						&j_dbs_info->prev_cpu_wall, io_is_busy);
+						&j_dbs_info->prev_cpu_wall);
 		}
 		this_dbs_info->requested_freq = policy->cur;
 
@@ -407,13 +382,10 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 		dbs_enable--;
 		mutex_destroy(&this_dbs_info->timer_mutex);
 
-		if (dbs_enable == 0) {
+		if (dbs_enable == 0)
 			cpufreq_unregister_notifier(
 					&dbs_cpufreq_notifier_block,
 					CPUFREQ_TRANSITION_NOTIFIER);
-			sysfs_remove_group(cpufreq_global_kobject,
-					&dbs_attr_group);
-		}
 
 		mutex_unlock(&dbs_mutex);
 

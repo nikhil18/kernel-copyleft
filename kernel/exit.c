@@ -74,7 +74,6 @@ static void __unhash_process(struct task_struct *p, bool group_dead)
 		__this_cpu_dec(process_counts);
 	}
 	list_del_rcu(&p->thread_group);
-	list_del_rcu(&p->thread_node);
 }
 
 /*
@@ -706,7 +705,7 @@ static struct task_struct *find_new_reaper(struct task_struct *father)
 	struct task_struct *thread;
 
 	thread = father;
-	for_each_thread(father, thread) {
+	while_each_thread(father, thread) {
 		if (thread->flags & PF_EXITING)
 			continue;
 		if (unlikely(pid_ns->child_reaper == father))
@@ -748,10 +747,10 @@ static struct task_struct *find_new_reaper(struct task_struct *father)
 			if (!reaper->signal->is_child_subreaper)
 				continue;
 			thread = reaper;
-			for_each_thread(reaper, thread) {
+			do {
 				if (!(thread->flags & PF_EXITING))
 					return reaper;
-			}
+			} while_each_thread(reaper, thread);
 		}
 	}
 
@@ -805,7 +804,7 @@ static void forget_original_parent(struct task_struct *father)
 
 	list_for_each_entry_safe(p, n, &father->children, sibling) {
 		struct task_struct *t = p;
-		for_each_thread(p, t) {
+		do {
 			t->real_parent = reaper;
 			if (t->parent == father) {
 				BUG_ON(t->ptrace);
@@ -814,7 +813,7 @@ static void forget_original_parent(struct task_struct *father)
 			if (t->pdeath_signal)
 				group_send_sig_info(t->pdeath_signal,
 						    SEND_SIG_NOINFO, t);
-		}
+		} while_each_thread(p, t);
 		reparent_leader(father, p, &dead_children);
 	}
 	write_unlock_irq(&tasklist_lock);
@@ -1728,7 +1727,7 @@ repeat:
 	set_current_state(TASK_INTERRUPTIBLE);
 	read_lock(&tasklist_lock);
 	tsk = current;
-	for_each_thread(current, tsk) {
+	do {
 		retval = do_wait_thread(wo, tsk);
 		if (retval)
 			goto end;
@@ -1739,7 +1738,7 @@ repeat:
 
 		if (wo->wo_flags & __WNOTHREAD)
 			break;
-	}
+	} while_each_thread(current, tsk);
 	read_unlock(&tasklist_lock);
 
 notask:

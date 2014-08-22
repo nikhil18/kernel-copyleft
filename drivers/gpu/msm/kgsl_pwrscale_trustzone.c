@@ -52,7 +52,7 @@ spinlock_t tz_lock;
  * frame length, but less than the idle timer.
  */
 #define CEILING			50000
-#define SWITCH_OFF		128
+#define SWITCH_OFF		200
 #define SWITCH_OFF_RESET_TH	40
 #define SKIP_COUNTER		500
 #define TZ_RESET_ID		0x3
@@ -135,7 +135,6 @@ static struct attribute *tz_attrs[] = {
 
 static struct attribute_group tz_attr_group = {
 	.attrs = tz_attrs,
-
 };
 
 static void tz_wake(struct kgsl_device *device, struct kgsl_pwrscale *pwrscale)
