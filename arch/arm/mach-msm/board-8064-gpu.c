@@ -24,10 +24,10 @@
 
 #ifdef CONFIG_MSM_DCVS
 static struct msm_dcvs_freq_entry grp3d_freq[] = {
-	{0, 900, 0, 0, 0},
-	{0, 950, 0, 0, 0},
-	{0, 950, 0, 0, 0},
-	{0, 1200, 1, 100, 100},
+	{128000000, 0, 333932},
+	{200000000, 0, 497532},
+	{320000000, 0, 707610},
+	{400000000, 0, 844545},
 };
 
 static struct msm_dcvs_core_info grp3d_core_info = {
@@ -93,13 +93,13 @@ static struct msm_bus_vectors grp3d_low_vectors[] = {
 		.src = MSM_BUS_MASTER_GRAPHICS_3D,
 		.dst = MSM_BUS_SLAVE_EBI_CH0,
 		.ab = 0,
-		.ib = KGSL_CONVERT_TO_MBPS(1000),
+		.ib = KGSL_CONVERT_TO_MBPS(1500),
 	},
 	{
 		.src = MSM_BUS_MASTER_GRAPHICS_3D_PORT1,
 		.dst = MSM_BUS_SLAVE_EBI_CH0,
 		.ab = 0,
-		.ib = KGSL_CONVERT_TO_MBPS(1000),
+		.ib = KGSL_CONVERT_TO_MBPS(1500),
 	},
 };
 
@@ -254,6 +254,11 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 	.pwrlevel = {
 #ifdef CONFIG_GPU_OVERCLOCK
 		{
+			.gpu_freq = 627000000,
+			.bus_freq = 7,
+			.io_fraction = 0,
+		},
+		{
 			.gpu_freq = 533333000,
 			.bus_freq = 6,
 			.io_fraction = 0,
@@ -302,10 +307,10 @@ static struct kgsl_device_platform_data kgsl_3d0_pdata = {
 	},
 	.init_level = 1,
 #ifdef CONFIG_GPU_OVERCLOCK
-	.num_levels = 7,
+	.num_levels = 8,
 #else
 	.num_levels = 5,
-#endif	
+#endif			
 	.set_grp_async = NULL,
 	.idle_timeout = HZ/10,
 	.nap_allowed = true,

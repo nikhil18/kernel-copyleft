@@ -2960,7 +2960,6 @@ config MSM_MODEM_SUBSYSTEM_RESTART_MONITOR
 	  This option enables a module which can notify user-space
 	  applications of modem subsystem power up/down event via uevent.
 
-<<<<<<< HEAD
 config HAS_MACH_MEMUTILS
 	default y
 	bool "Motorola MSM memcpy enhancements"
@@ -2974,22 +2973,8 @@ config FORCE_FAST_CHARGE
 		A simple sysfs interface to force adapters that
 		are detected as USB to charge as AC.
 
-=======
-<<<<<<< HEAD
->>>>>>> e0f3d7a... some more fixes for gamma control
-config UPDATE_LCDC_LUT
-         bool "Set initial Qualcomm LCDC lut"
-=======
-config FORCE_FAST_CHARGE
-	bool "Force AC charge mode at will"
-	default y
-	help
-		A simple sysfs interface to force adapters that
-		are detected as USB to charge as AC.
-
 config UPDATE_LCDC_LUT_STANDALONE
          bool "Set initial Qualcomm LCDC lut MSM"
->>>>>>> 782fa4c... some more fixes for gamma control
          default y
          help
            Set initial Qualcomm LCDC Look Up Table.
