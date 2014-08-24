@@ -1657,14 +1657,6 @@ config SCHED_MC
 	  making when dealing with multi-core CPU chips at a cost of slightly
 	  increased overhead in some places. If unsure say N here.
 
-config ASMP
-	bool "Multi-core automatic hotplug support"
-	depends on SMP
-	default y
-	help
-	  Automatically hotplugs the multiple cpu cores on and off
-	  based on cpu load and suspend state
-
 config SCHED_SMT
 	bool "SMT scheduler support"
 	depends on ARM_CPU_TOPOLOGY
@@ -1731,11 +1723,9 @@ config HOTPLUG_CPU
 config ARM_AUTO_HOTPLUG
 	bool "Auto hotplugging based on scheduler runqueue load for ARM SoCs"
 	depends on HOTPLUG_CPU
-	depends on ARCH_EXYNOS4 || ARCH_TEGRA || ARCH_MSM_SCORPIONMP || \
-	ARCH_MSM_KRAITMP
-	depends on !TEGRA_AUTO_HOTPLUG && !CPU_FREQ_GOV_PEGASUSQ && \
-	!CPU_FREQ_GOV_HOTPLUG && !MSM_MPDEC
 	default y
+        help
+          This option enables support for the arm auto hotplug.
 
 config LOCAL_TIMERS
 	bool "Use local timer interrupts"
