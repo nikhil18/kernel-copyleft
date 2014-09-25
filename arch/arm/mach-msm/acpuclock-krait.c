@@ -932,11 +932,18 @@ static void __init bus_init(const struct l2_level *l2_level)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_CPU_VOLTAGE_TABLE
 
 #define HFPLL_MIN_VDD		 600000
 #define HFPLL_MAX_VDD		1450000
+=======
+#ifdef CONFIG_CPU_VOLTAGE_TABLE
+
+#define HFPLL_MIN_VDD		 700000
+#define HFPLL_MAX_VDD		1300000
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 
 ssize_t acpuclk_get_vdd_levels_str(char *buf) {
 
@@ -971,7 +978,11 @@ void acpuclk_set_vdd(unsigned int khz, int vdd_uv) {
 		else if ( drv.acpu_freq_tbl[i].speed.khz == khz)
 			new_vdd_uv = min(max((unsigned int)vdd_uv,
 				(unsigned int)HFPLL_MIN_VDD), (unsigned int)HFPLL_MAX_VDD);
+<<<<<<< HEAD
 		else
+=======
+		else 
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 			continue;
 
 		drv.acpu_freq_tbl[i].vdd_core = new_vdd_uv;
@@ -981,7 +992,10 @@ void acpuclk_set_vdd(unsigned int khz, int vdd_uv) {
 }
 #endif	/* CONFIG_CPU_VOTALGE_TABLE */
 
+<<<<<<< HEAD
 >>>>>>> 9f214eb... Add Intelli-Plug
+=======
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 #ifdef CONFIG_CPU_FREQ_MSM
 static struct cpufreq_frequency_table freq_table[NR_CPUS][35];
 

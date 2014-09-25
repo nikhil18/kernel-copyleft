@@ -623,7 +623,10 @@ static ssize_t show_bios_limit(struct cpufreq_policy *policy, char *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 #ifdef CONFIG_CPU_VOLTAGE_TABLE
 
 extern ssize_t acpuclk_get_vdd_levels_str(char *buf);
@@ -686,6 +689,7 @@ static ssize_t store_vdd_levels(struct kobject *a, struct attribute *b, const ch
 
 #endif	/* CONFIG_CPU_VOLTAGE_TABLE */
 
+<<<<<<< HEAD
 ssize_t show_gpu_mv_table(struct cpufreq_policy *policy, char *buf)
 {
         return get_gpu_vdd_levels_str(buf);
@@ -701,6 +705,8 @@ ssize_t store_gpu_mv_table(struct cpufreq_policy *policy, const char *buf, size_
 }
 
 >>>>>>> 9f214eb... Add Intelli-Plug
+=======
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 cpufreq_freq_attr_ro_perm(cpuinfo_cur_freq, 0400);
 cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
@@ -717,12 +723,18 @@ cpufreq_freq_attr_rw(scaling_max_freq);
 cpufreq_freq_attr_rw(scaling_governor);
 cpufreq_freq_attr_rw(scaling_setspeed);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 cpufreq_freq_attr_rw(gpu_mv_table);
 #ifdef CONFIG_CPU_VOLTAGE_TABLE
 define_one_global_rw(vdd_levels);
 #endif
 >>>>>>> 9f214eb... Add Intelli-Plug
+=======
+#ifdef CONFIG_CPU_VOLTAGE_TABLE
+define_one_global_rw(vdd_levels);
+#endif
+>>>>>>> 12fd7d8... add support for control CPU voltage vdd_levels and decreased MIN value undervolt for 700mV
 
 static struct attribute *default_attrs[] = {
 	&cpuinfo_min_freq.attr,
@@ -740,6 +752,18 @@ static struct attribute *default_attrs[] = {
 	&gpu_mv_table.attr,
 	NULL
 };
+
+#ifdef CONFIG_CPU_VOLTAGE_TABLE
+static struct attribute *vddtbl_attrs[] = {
+	&vdd_levels.attr,
+	NULL
+};
+
+static struct attribute_group vddtbl_attr_group = {
+	.attrs = vddtbl_attrs,
+	.name = "vdd_table",
+};
+#endif	/* CONFIG_CPU_VOLTAGE_TABLE */
 
 struct kobject *cpufreq_global_kobject;
 EXPORT_SYMBOL(cpufreq_global_kobject);
@@ -2235,6 +2259,10 @@ static int __init cpufreq_core_init(void)
 #endif	/* CONFIG_CPU_VOLTAGE_TABLE */
 >>>>>>> 9f214eb... Add Intelli-Plug
 
+#ifdef CONFIG_CPU_VOLTAGE_TABLE
+	int rc;
+#endif	/* CONFIG_CPU_VOLTAGE_TABLE */
+
 	if (cpufreq_disabled())
 		return -ENODEV;
 
@@ -2252,6 +2280,10 @@ static int __init cpufreq_core_init(void)
 	rc = sysfs_create_group(cpufreq_global_kobject, &vddtbl_attr_group);
 #endif	/* CONFIG_CPU_VOLTAGE_TABLE */
 >>>>>>> 9f214eb... Add Intelli-Plug
+
+#ifdef CONFIG_CPU_VOLTAGE_TABLE
+	rc = sysfs_create_group(cpufreq_global_kobject, &vddtbl_attr_group);
+#endif	/* CONFIG_CPU_VOLTAGE_TABLE */
 
 	return 0;
 }
