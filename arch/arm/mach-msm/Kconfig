@@ -2894,29 +2894,17 @@ config MSM_MODEM_SUBSYSTEM_RESTART_MONITOR
 	  This option enables a module which can notify user-space
 	  applications of modem subsystem power up/down event via uevent.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> a155bd7... fixes
 config HAS_MACH_MEMUTILS
 	default y
 	bool "Motorola MSM memcpy enhancements"
 	help
 	Faster memcpy performance for Krait
-<<<<<<< HEAD
-=======
+
 config FORCE_FAST_CHARGE
 	bool "Force AC charge mode at will"
 	default y
 	help
 		A simple sysfs interface to force adapters that
 		are detected as USB to charge as AC.
->>>>>>> 269feb4... ported USB force FastCharge (thanks to motley-git, franciscofranco, Chad Froebel) with some of my patches/fixes
 
->>>>>>> 6ae84f3... ported USB force FastCharge (thanks to motley-git, franciscofranco, Chad Froebel) with some of my patches/fixes
-=======
-
->>>>>>> a155bd7... fixes
 endif
