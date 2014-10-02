@@ -1658,9 +1658,15 @@ config MSM_CPU_FREQ_MIN
 
 config CPU_VOLTAGE_TABLE
 	bool "Enable CPU Voltage Table via sysfs"
-	default n
+	default y
 	help
 	  Krait User Voltage Control
+
+config GPU_OVERCLOCK
+	bool "Enable GPU Overclocking option"
+	default y
+	help
+	  Adreno3xx overclocking up to 627 MHz
 
 endif # CPU_FREQ_MSM
 
@@ -2889,13 +2895,17 @@ config MSM_MODEM_SUBSYSTEM_RESTART_MONITOR
 	  applications of modem subsystem power up/down event via uevent.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> a155bd7... fixes
 config HAS_MACH_MEMUTILS
 	default y
 	bool "Motorola MSM memcpy enhancements"
 	help
 	Faster memcpy performance for Krait
+<<<<<<< HEAD
 =======
 config FORCE_FAST_CHARGE
 	bool "Force AC charge mode at will"
@@ -2906,4 +2916,7 @@ config FORCE_FAST_CHARGE
 >>>>>>> 269feb4... ported USB force FastCharge (thanks to motley-git, franciscofranco, Chad Froebel) with some of my patches/fixes
 
 >>>>>>> 6ae84f3... ported USB force FastCharge (thanks to motley-git, franciscofranco, Chad Froebel) with some of my patches/fixes
+=======
+
+>>>>>>> a155bd7... fixes
 endif
